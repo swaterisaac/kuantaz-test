@@ -1,4 +1,6 @@
-import { Button, Grid, TextField } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
+import StyledButton from './StyledButton';
+import StyledCard from './StyledCard';
 
 export type ApiData = {
   disabled: boolean;
@@ -40,22 +42,26 @@ export default async function Home() {
       <Grid item lg={12}>
         <h1>Formulario dinámico para Kuantaz</h1>
       </Grid>
-      {body.data.map(
-        data =>
-          <Grid item key={data.label} lg={6} xs={12}>
-            <TextField
-              disabled={data.disabled}
-              fullWidth
-              key={data.label}
-              label={data.label}
-              required={data.isRequired}
-            >
-              {data.name}
-            </TextField>
+      <Grid item lg={12}>
+        <StyledCard>
+          <Grid container spacing={2}>
+            {body.data.map(
+              data =>
+                <Grid item key={data.label} lg={6} xs={12}>
+                  <TextField
+                    disabled={data.disabled}
+                    fullWidth
+                    key={data.label}
+                    label={data.label}
+                    required={data.isRequired}
+                  />
+                </Grid>
+            )}
           </Grid>
-      )}
-      <Grid item justifyItems='flex-end'>
-        {/* <Button variant='contained'>Enviar</Button> */}
+          <Grid container justifyContent='end' lg={12}>
+            <StyledButton variant='contained'>Enviar</StyledButton>
+          </Grid>
+        </StyledCard>
       </Grid>
     </Grid>
   )
