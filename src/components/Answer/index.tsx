@@ -1,8 +1,7 @@
-import Title from '../Home/Title';
+import Title from './Title';
 import FormData from './FormData';
 
 export default function Answer() {
-
   return (
     <div>
       <Title />

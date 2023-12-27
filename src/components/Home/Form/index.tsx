@@ -31,10 +31,11 @@ export default function Form({ formInputs }: FormProps) {
     let queryParams = '';
     for (const formInput of state) {
       if(formInput.value) {
-        queryParams += `${formInput.name}=${formInput.value}`;
+        queryParams += `${formInput.name}=${formInput.value}&`;
       }
     }
 
+    queryParams = queryParams.slice(0, -1);
     router.push(`/respuesta?${queryParams}`);
   }, [state]);
 
