@@ -5,7 +5,7 @@ export default function SubmitButton() {
   return (
     <Grid container justifyContent='end'>
       <Grid item>
-        <StyledButton variant='contained'>Confirmar</StyledButton>
+        <StyledButton type='submit' variant='contained'>Confirmar</StyledButton>
       </Grid>
     </Grid>
   )
