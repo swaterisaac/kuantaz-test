@@ -1,95 +1,62 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import { Button, Grid, TextField } from '@mui/material';
 
-export default function Home() {
+export type ApiData = {
+  disabled: boolean;
+  isRequired: boolean;
+  label: string;
+  name: string;
+  type: string;
+  value: string;
+};
+
+export type Body = {
+  data: Array<ApiData>
+};
+
+async function getData(): Promise<Body> {
+  const res = await fetch('https://run.mocky.io/v3/3f3de857-cd4e-4901-8ff7-14b7b9024aac')
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch data')
+  }
+
+  const text = (await res.text())
+    .replace(/'/g, '"')
+    .replace(/label/g, '"label"')
+    .replace(/name/g, '"name"')
+    .replace(/isRequired/g, '"isRequired"')
+    .replace(/disabled/g, '"disabled"')
+    .replace(/type/g, '"type"')
+    .replace(/value/g, '"value"')
+    .replace(/null,/g, 'null');
+  return JSON.parse(text);
+}
+
+export default async function Home() {
+  const body = await getData();
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <Grid container spacing={2}>
+      <Grid item lg={12}>
+        <h1>Formulario dinámico para Kuantaz</h1>
+      </Grid>
+      {body.data.map(
+        data =>
+          <Grid item key={data.label} lg={6} xs={12}>
+            <TextField
+              disabled={data.disabled}
+              fullWidth
+              key={data.label}
+              label={data.label}
+              required={data.isRequired}
+            >
+              {data.name}
+            </TextField>
+          </Grid>
+      )}
+      <Grid item justifyItems='flex-end'>
+        {/* <Button variant='contained'>Enviar</Button> */}
+      </Grid>
+    </Grid>
   )
 }

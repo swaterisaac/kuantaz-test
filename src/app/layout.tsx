@@ -1,6 +1,10 @@
+import '../styles/globals.css';
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
+import { Container, Grid } from '@mui/material';
+
+import ThemeClient from './ThemeClient';
+import StyledContainer from './StyledContainer';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,8 +19,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <ThemeClient>
+      <html lang="es">
+        <body className={inter.className}>
+          <StyledContainer maxWidth={'lg'}>
+            <main>
+              {children}
+            </main>
+          </StyledContainer>
+        </body>
+      </html>
+    </ThemeClient>
   )
 }
