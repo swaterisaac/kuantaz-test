@@ -39,9 +39,8 @@ export default function DynamicInput({
       if(!inputRef.current || !validation) {
         return;
       }
-      inputRef.current.pattern = validation.regex;
       
-      console.log(!inputRef.current.value.match(validation.regex))
+      inputRef.current.pattern = validation.regex;
       if(!inputRef.current.value.match(validation.regex)) {
         return inputRef.current.setCustomValidity(validation.message);
       } 
