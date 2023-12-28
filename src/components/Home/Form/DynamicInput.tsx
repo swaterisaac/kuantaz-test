@@ -51,7 +51,7 @@ export default function DynamicInput({
     }, [inputRef.current, inputRef.current?.value, validation]);
 
     return <TextField
-      // disabled={formInput.disabled}
+      disabled={formInput.disabled}
       inputRef={inputRef}
       onChange={onChangeText}
       fullWidth
