@@ -1,9 +1,16 @@
+export type Item = {
+  id: number;
+  value: string;
+};
+
 export type ApiData = {
   disabled: boolean;
   isRequired: boolean;
+  items?: Array<Item>;
   label: string;
   name: string;
-  type: string;
+  type: 'TextInput' | 'Select' | 'Radio';
+  validation?: string;
   value: string;
 };
 

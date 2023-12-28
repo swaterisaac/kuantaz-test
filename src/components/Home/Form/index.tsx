@@ -1,12 +1,13 @@
 'use client';
 
-import { ApiBody } from '@/utils/getFormData';
+import { ApiBody, ApiData } from '@/utils/getFormData';
+import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
+import { SelectChangeEvent } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import Grid from '@mui/material/Grid';
 import StyledCard from './StyledCard';
 import SubmitButton from './SubmitButton';
-import TextField from '@mui/material/TextField';
-import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import DynamicInput from './DynamicInput';
 
 export type FormProps = {
   formInputs: ApiBody;
@@ -14,23 +15,35 @@ export type FormProps = {
 export default function Form({ formInputs }: FormProps) {
   const [state, setState] = useState(formInputs);
 
-  const onChangeHandler = useCallback((index: number) => (event: ChangeEvent<HTMLInputElement>) => {
+  const changeState = (value: string, index: number) => {
     setState([
       ...state.slice(0, index),
       {
         ...state[index],
-        value: event.target.value,
+        value: value,
       },
       ...state.slice(index + 1)
     ]);
-  }, [state]);
+  }
+
+  const onTextChangeHandler = useCallback((index: number) => (event: ChangeEvent<HTMLInputElement>) => {
+    changeState(event.target.value, index);
+  }, [changeState]);
+
+  const onSelectChangeHandler = useCallback((index: number) => (event: SelectChangeEvent<ApiData['value']>) => {
+    changeState(event.target.value, index);
+  }, [changeState]);
+
+  const onRadioChangeHandler = useCallback((index: number) => (event: ChangeEvent<HTMLInputElement>) => {
+    changeState(event.target.value, index);
+  }, [changeState]);
 
   const router = useRouter();
   const onSubmitHandler = useCallback((event: FormEvent) => {
     event.preventDefault();
     let queryParams = '';
     for (const formInput of state) {
-      if(formInput.value) {
+      if (formInput.value) {
         queryParams += `${formInput.name}=${formInput.value}&`;
       }
     }
@@ -47,14 +60,11 @@ export default function Form({ formInputs }: FormProps) {
             {state.map(
               (formInput, index) =>
                 <Grid item key={formInput.label} lg={6} xs={12}>
-                  <TextField
-                    disabled={formInput.disabled}
-                    onChange={onChangeHandler(index)}
-                    fullWidth
-                    key={formInput.label}
-                    label={formInput.label}
-                    required={formInput.isRequired}
-                    value={formInput.value}
+                  <DynamicInput 
+                    formInput={formInput}
+                    onChangeRadio={onRadioChangeHandler(index)}
+                    onChangeSelect={onSelectChangeHandler(index)}
+                    onChangeText={onTextChangeHandler(index)}
                   />
                 </Grid>
             )}
