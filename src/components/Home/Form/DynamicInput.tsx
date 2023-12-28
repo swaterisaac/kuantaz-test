@@ -1,5 +1,4 @@
 import { ApiData } from '@/utils/getFormData';
-import { Fragment } from 'react';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
@@ -9,6 +8,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup, { RadioGroupProps } from '@mui/material/RadioGroup';
 import Select, { SelectProps } from '@mui/material/Select';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
+import { useEffect, useMemo, useRef } from 'react';
 
 export type DynamicInputProps = (TextFieldProps) & {
   onChangeText: TextFieldProps['onChange'];
@@ -24,8 +24,36 @@ export default function DynamicInput({
   onChangeRadio
 }: DynamicInputProps) {
   if (formInput.type === 'TextInput') {
+    const validation = useMemo(() => {
+      if(formInput.validation === 'email') {
+        return {
+          message: 'La dirección de correo electrónico no es válida',
+          regex: '[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\\.[a-z]{2,4}$'
+        };
+      }
+      return undefined;
+    }, [formInput.validation])
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+      if(!inputRef.current || !validation) {
+        return;
+      }
+      inputRef.current.pattern = validation.regex;
+      
+      console.log(!inputRef.current.value.match(validation.regex))
+      if(!inputRef.current.value.match(validation.regex)) {
+        return inputRef.current.setCustomValidity(validation.message);
+      } 
+
+      inputRef.current.setCustomValidity('');
+      
+
+    }, [inputRef.current, inputRef.current?.value, validation]);
+
     return <TextField
-      disabled={formInput.disabled}
+      // disabled={formInput.disabled}
+      inputRef={inputRef}
       onChange={onChangeText}
       fullWidth
       key={formInput.label}
